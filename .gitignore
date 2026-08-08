@@ -1,0 +1,8 @@
+# Build directory
+mywebsite/target/
+
+# IDE configurations
+.idea/
+*.class
+*.imw
+*.log
