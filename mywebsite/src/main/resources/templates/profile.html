@@ -93,6 +93,22 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* Success Alert Banner */
+        .alert-success {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #34d399;
+            padding: 14px 20px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.1);
+        }
+
         /* Top Navigation Header */
         .top-nav {
             display: flex;
@@ -488,6 +504,7 @@
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            font-size: 1.2rem;
         }
 
         .timeline-info h4 {
@@ -543,6 +560,14 @@
     <div class="blob blob-2"></div>
 
     <div class="profile-container">
+
+        <!-- Backend Success Notification Banner -->
+        <div th:if="${successMessage}" class="alert-success">
+            <svg class="icon" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span th:text="${successMessage}">Cập nhật thành công!</span>
+        </div>
         
         <!-- Top Navigation -->
         <div class="top-nav">
@@ -556,7 +581,7 @@
                 <svg class="icon" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
-                Trang Cá Nhân
+                Trang Cá Nhân (Backend Enabled)
             </div>
         </div>
 
@@ -567,18 +592,18 @@
             <div class="profile-header-body">
                 <div class="avatar-wrapper">
                     <div class="avatar-box">
-                        <div class="avatar" th:text="${username != null ? #strings.substring(username, 0, 1).toUpperCase() : 'A'}">A</div>
+                        <div class="avatar" th:text="${userProfile.fullName != null ? #strings.substring(userProfile.fullName, 0, 1).toUpperCase() : 'A'}">A</div>
                         <div class="online-status" title="Đang hoạt động"></div>
                     </div>
                     
                     <div class="header-actions">
-                        <button class="btn btn-primary" onclick="alert('Tính năng chỉnh sửa hồ sơ đã được chọn!')">
+                        <button class="btn btn-primary" onclick="switchTab('info', document.querySelector('.tab-btn'))">
                             <svg class="icon" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                             </svg>
-                            Chỉnh Sửa
+                            Chỉnh Sửa Hồ Sơ
                         </button>
-                        <button class="btn btn-secondary" onclick="alert('Đã chia sẻ liên kết trang cá nhân!')">
+                        <button class="btn btn-secondary" onclick="alert('Liên kết trang cá nhân: ' + window.location.href)">
                             <svg class="icon" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                             </svg>
@@ -588,10 +613,10 @@
                 </div>
 
                 <div class="profile-info">
-                    <h1 th:text="${username != null ? username : 'Nguyễn Văn Admin'}">Nguyễn Văn Admin</h1>
-                    <div class="title">Lập Trình Viên Full-Stack & Spring Boot Developer</div>
-                    <p class="bio">
-                        Đam mê xây dựng các ứng dụng web hiện đại, tối ưu hiệu năng và trải nghiệm người dùng ấn tượng. Thích tìm hiểu công nghệ mới và chia sẻ kiến thức lập trình.
+                    <h1 th:text="${userProfile.fullName}">Nguyễn Văn Admin</h1>
+                    <div class="title" th:text="${userProfile.jobTitle}">Senior Java Spring Boot Web Developer</div>
+                    <p class="bio" th:text="${userProfile.bio}">
+                        Đam mê xây dựng các ứng dụng web hiện đại, tối ưu hiệu năng và trải nghiệm người dùng ấn tượng.
                     </p>
                     
                     <div class="meta-tags">
@@ -600,19 +625,19 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                             </svg>
-                            <span>Hà Nội, Việt Nam</span>
+                            <span th:text="${userProfile.location}">Hà Nội, Việt Nam</span>
                         </div>
                         <div class="meta-item">
                             <svg class="icon" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                             </svg>
-                            <span>Công ty Công nghệ ABC</span>
+                            <span th:text="${userProfile.company}">Công ty Công nghệ ABC</span>
                         </div>
                         <div class="meta-item">
                             <svg class="icon" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
-                            <span>Tham gia từ Tháng 08/2026</span>
+                            <span th:text="'Tham gia từ ' + ${userProfile.joinedDate}">Tham gia từ Tháng 08/2026</span>
                         </div>
                     </div>
                 </div>
@@ -622,19 +647,19 @@
         <!-- Quick Stats Grid -->
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-value">15+</div>
+                <div class="stat-value" th:text="${userProfile.projectsCount} + '+'">15+</div>
                 <div class="stat-label">Dự Án Đã Làm</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value">1.8k</div>
+                <div class="stat-value" th:text="${userProfile.visitsCount}">1.8k</div>
                 <div class="stat-label">Lượt Ghé Thăm</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value">4.9 ★</div>
+                <div class="stat-value" th:text="${userProfile.rating}">4.9 ★</div>
                 <div class="stat-label">Đánh Giá Uy Tín</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value">3+ Năm</div>
+                <div class="stat-value" th:text="${userProfile.experienceYears}">3+ Năm</div>
                 <div class="stat-label">Kinh Nghiệm</div>
             </div>
         </div>
@@ -661,52 +686,65 @@
             </button>
         </div>
 
-        <!-- TAB 1: THÔNG TIN CÁ NHÂN -->
+        <!-- TAB 1: THÔNG TIN CÁ NHÂN (Spring Boot Form Binding) -->
         <div id="tab-info" class="tab-content active">
             <div class="details-card">
                 <div class="section-title">
                     <svg class="icon" style="color: var(--primary);" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    Chi Tiết Thông Tin Tài Khoản
+                    Chỉnh Sửa Thông Tin Cá Nhân (Lưu vào Backend)
                 </div>
 
-                <form onsubmit="event.preventDefault(); alert('Cập nhật thông tin thành công (Demo Giao diện)!');">
+                <form th:action="@{/profile/update}" th:object="${userProfile}" method="POST">
                     <div class="form-grid">
                         <div class="form-group">
                             <label class="form-label">Tên Đăng Nhập</label>
-                            <input type="text" class="form-input" th:value="${username != null ? username : 'admin'}" readonly>
+                            <input type="text" class="form-input" th:value="${username}" readonly disabled>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Họ và Tên</label>
-                            <input type="text" class="form-input" value="Nguyễn Văn Admin">
+                            <input type="text" class="form-input" th:field="*{fullName}" required>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Địa Chỉ Email</label>
-                            <input type="email" class="form-input" value="admin@example.com">
+                            <input type="email" class="form-input" th:field="*{email}" required>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Số Điện Thoại</label>
-                            <input type="text" class="form-input" value="0987 654 321">
+                            <input type="text" class="form-input" th:field="*{phone}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Địa Chỉ / Thành Phố</label>
+                            <input type="text" class="form-input" th:field="*{location}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Tên Công Ty</label>
+                            <input type="text" class="form-input" th:field="*{company}">
                         </div>
                         <div class="form-group full-width">
                             <label class="form-label">Chức Danh Công Việc</label>
-                            <input type="text" class="form-input" value="Senior Java Spring Boot Web Developer">
+                            <input type="text" class="form-input" th:field="*{jobTitle}">
                         </div>
                         <div class="form-group full-width">
-                            <label class="form-label">Giới Thiệu Bản Thân</label>
-                            <textarea class="form-input" rows="3" style="resize: vertical;">Đam mê xây dựng các ứng dụng web hiện đại, tối ưu hiệu năng và trải nghiệm người dùng ấn tượng.</textarea>
+                            <label class="form-label">Giới Thiệu Bản Thân (Bio)</label>
+                            <textarea class="form-input" th:field="*{bio}" rows="3" style="resize: vertical;"></textarea>
                         </div>
                     </div>
 
                     <div style="margin-top: 24px; text-align: right;">
-                        <button type="submit" class="btn btn-primary">Lưu Thay Đổi</button>
+                        <button type="submit" class="btn btn-primary">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                            </svg>
+                            Lưu Thông Tin Vào Backend
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
 
-        <!-- TAB 2: KỸ NĂNG -->
+        <!-- TAB 2: KỸ NĂNG (Dynamic Skills rendering) -->
         <div id="tab-skills" class="tab-content">
             <div class="details-card">
                 <div class="section-title">
@@ -717,50 +755,27 @@
                 </div>
 
                 <div class="skills-list">
-                    <div class="skill-badge">☕ Java 17+</div>
-                    <div class="skill-badge">🌱 Spring Boot 3</div>
-                    <div class="skill-badge">🍃 Thymeleaf Template</div>
-                    <div class="skill-badge">🎨 HTML5 / CSS3 / Glassmorphic</div>
-                    <div class="skill-badge">⚡ JavaScript (ES6+)</div>
-                    <div class="skill-badge">🐬 MySQL / PostgreSQL</div>
-                    <div class="skill-badge">🔀 Git & GitHub</div>
-                    <div class="skill-badge">🐳 Docker Basics</div>
-                    <div class="skill-badge">🔒 Spring Security</div>
-                    <div class="skill-badge">🚀 RESTful API</div>
+                    <div class="skill-badge" th:each="skill : ${userProfile.skills}" th:text="${skill}">☕ Java 17+</div>
                 </div>
             </div>
         </div>
 
-        <!-- TAB 3: HOẠT ĐỘNG GẦN ĐÂY -->
+        <!-- TAB 3: HOẠT ĐỘNG GẦN ĐÂY (Dynamic Timeline from Backend) -->
         <div id="tab-activity" class="tab-content">
             <div class="details-card">
                 <div class="section-title">
                     <svg class="icon" style="color: #34d399;" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
-                    Nhật Ký Hoạt Động
+                    Nhật Ký Hoạt Động (Từ Backend Service)
                 </div>
 
                 <div class="timeline">
-                    <div class="timeline-item">
-                        <div class="timeline-icon">✨</div>
+                    <div class="timeline-item" th:each="act : ${userProfile.activities}">
+                        <div class="timeline-icon" th:text="${act.icon}">✨</div>
                         <div class="timeline-info">
-                            <h4>Tạo thành công giao diện Trang Cá Nhân</h4>
-                            <p>Vừa cập nhật giao diện Glassmorphism hiện đại cho hệ thống • 5 phút trước</p>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-icon">🔑</div>
-                        <div class="timeline-info">
-                            <h4>Đăng nhập thành công vào Bảng điều khiển</h4>
-                            <p>Phiên làm việc được tạo thành công với quyền Admin • 30 phút trước</p>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-icon">💻</div>
-                        <div class="timeline-info">
-                            <h4>Khởi chạy ứng dụng Spring Boot</h4>
-                            <p>Hệ thống đã sẵn sàng phục vụ tại cổng 8080 • 1 giờ trước</p>
+                            <h4 th:text="${act.title}">Tiêu đề hoạt động</h4>
+                            <p th:text="${act.description}">Mô tả chi tiết hoạt động...</p>
                         </div>
                     </div>
                 </div>
@@ -772,13 +787,13 @@
     <!-- Simple JS for UI tab switching -->
     <script>
         function switchTab(tabId, element) {
-            // Remove active class from all tabs & buttons
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             
-            // Add active class to selected
             document.getElementById('tab-' + tabId).classList.add('active');
-            element.classList.add('active');
+            if (element) {
+                element.classList.add('active');
+            }
         }
     </script>
 </body>
